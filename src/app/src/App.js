@@ -1,29 +1,93 @@
+import { useState, useEffect } from 'react';
 import './App.css';
-import logo from './logo.svg';
-
+import { todoApi } from './services/api';
+import { TodoForm } from './components/TodoForm';
+import { TodoList } from './components/TodoList';
 
 export function App() {
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchTodos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await todoApi.getAll();
+      setTodos(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const createTodo = async (description) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await todoApi.create(description);
+      await fetchTodos();
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleTodo = async (todoId, currentStatus) => {
+    try {
+      setError(null);
+      await todoApi.update(todoId, !currentStatus);
+      await fetchTodos();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const deleteTodo = async (todoId) => {
+    try {
+      setError(null);
+      await todoApi.delete(todoId);
+      await fetchTodos();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="App">
-      <div>
-        <h1>List of TODOs</h1>
-        <li>Learn Docker</li>
-        <li>Learn React</li>
-      </div>
-      <div>
-        <h1>Create a ToDo</h1>
-        <form>
-          <div>
-            <label for="todo">ToDo: </label>
-            <input type="text" />
+      <div className="container">
+        <h1 className="title">Todo Application</h1>
+
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError(null)} className="close-btn">×</button>
           </div>
-          <div style={{"marginTop": "5px"}}>
-            <button>Add ToDo!</button>
-          </div>
-        </form>
+        )}
+
+        <TodoForm onSubmit={createTodo} loading={loading} />
+
+        <div className="list-section">
+          <h2>List of Todos ({todos.length})</h2>
+          <TodoList 
+            todos={todos} 
+            loading={loading} 
+            onToggle={toggleTodo} 
+            onDelete={deleteTodo} 
+          />
+        </div>
       </div>
     </div>
   );
 }
 
 export default App;
+
+

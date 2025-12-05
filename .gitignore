@@ -1,0 +1,70 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+__pycache__/
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyc
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+mydatabase
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# MongoDB data
+src/db/
+*.wt
+*.lock
+WiredTiger*
+diagnostic.data/
+journal/
+storage.bson
+
+# Node / React
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+yarn.lock
+package-lock.json
+
+# React build
+/build
+/dist
+
+# Testing
+/coverage
+.eslintcache
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+src/tmp/
+*.tmp
+*.bak
+
+# Docker
+*.pid
+
+# OS
+Thumbs.db
+.DS_Store

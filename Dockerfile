@@ -1,7 +1,12 @@
 # set base image (host OS)
-FROM python:3.8
+FROM python:3.8-buster
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Debian Buster is EOL, configure archive repositories
+RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/99no-check-valid-until
 
 RUN apt-get -y update
 RUN apt-get install -y curl nano wget nginx git
@@ -20,8 +25,7 @@ RUN apt-get install -y mongodb-org
 # Install Yarn
 RUN apt-get install -y yarn
 
-# Install PIP
-RUN easy_install pip
+# Pip is already installed with Python 3.8
 
 
 ENV ENV_TYPE staging
